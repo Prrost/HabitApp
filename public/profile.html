@@ -7,7 +7,47 @@
 </head>
 <body>
 <h1>Profile</h1>
-<p>email: <span id="email"></span></p>
-<a href="api/auth/logout">log out</a>
+<p>Email: <span id="email"></span></p>
+<button id="logout">Log out</button>
+
+<script>
+  async function fetchProfile() {
+    const token = localStorage.getItem("token"); // Берём токен из localStorage
+
+    if (!token) {
+      alert("Not authenticated");
+      window.location.href = "/front/login"; // Если нет токена — отправляем на логин
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/users/profile", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`, // Передаём токен в заголовке
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch profile");
+      }
+
+      const userData = await response.json();
+      document.getElementById("email").textContent = userData.email; // Выводим email
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error fetching profile");
+      localStorage.removeItem("token"); // Удаляем токен, если ошибка
+      window.location.href = "/front/login"; // Редиректим на логин
+    }
+  }
+
+  document.getElementById("logout").addEventListener("click", () => {
+    localStorage.removeItem("token"); // Удаляем токен
+    window.location.href = "/front/login"; // Перенаправляем на логин
+  });
+
+  fetchProfile(); // Загружаем профиль при открытии страницы
+</script>
 </body>
 </html>
