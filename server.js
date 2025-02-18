@@ -6,6 +6,9 @@ const bodyParser = require('body-parser');
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const frontRoutes = require("./routes/frontRoutes");
+const userRoutes = require("./routes/userRoutes");
+const habitRoutes = require("./routes/habitRoutes");
+
 
 const app = express();
 
@@ -16,6 +19,8 @@ app.use(express.json());
 app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/front", frontRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/habits", habitRoutes);
 
 connectDB();
 
